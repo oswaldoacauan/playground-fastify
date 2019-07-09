@@ -9,7 +9,8 @@ const fastify = require('fastify')({
 })
 
 fastify.register(require('fastify-sensible'))
-fastify.register((request, reply, next) => {
+
+fastify.use((request, reply, next) => {
   request.log.info('--- FASTIFY ---');
   next();
 })
