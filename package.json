@@ -1,0 +1,16 @@
+{
+  "main": "index.js",
+  "scripts": {
+    "start": "node fastify.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "fastify": "2.6.0",
+    "fastify-log": "^1.0.3",
+    "fastify-sensible": "2.1.1",
+    "polka": "0.5.2",
+    "request": "2.88.0",
+    "request-promise": "4.2.4",
+    "restify": "8.3.3"
+  }
+}
