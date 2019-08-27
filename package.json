@@ -1,7 +1,8 @@
 {
   "main": "index.js",
   "scripts": {
-    "start": "node fastify.js",
+    "start": "NODE_ENV=production node fastify.js",
+    "dev": "nodemon --inspect fastify.js",
     "test": "node test.js"
   },
   "dependencies": {
@@ -12,5 +13,9 @@
     "request": "2.88.0",
     "request-promise": "4.2.4",
     "restify": "8.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1",
+    "pino-pretty": "^3.2.1"
   }
 }
