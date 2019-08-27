@@ -5,6 +5,7 @@
 ## Running
 
 `npm start` - Starts the server
+
 `npm test` - Calls the endpoints for testing
 
 ### Test
@@ -17,8 +18,10 @@ Expected result from the `npm test`
   'OK' ]
 
   // in your server after 2 sec
-  --- SLEEP AFTER 2.5S ---
-  --- SLEEP ERROR 3S ---
+  --- SLEEP AFTER 2S ---
+  --- SLEEP ERROR AFTER 3S ---
+  --- SLEEP AFTER 5S ---
+  --- SLEEP AFTER 10S ---
 ```
 
 
