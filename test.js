@@ -4,11 +4,9 @@ async function main() {
   const options = {
     method: 'POST',
     uri: `http://127.0.0.1:3000`,
-    qs: {
-      access_token: 'xxxxx xxxxx',
-    },
     headers: {
       'my-header': 'james',
+      'Authorization': 'Bearer a-super-secret-key',
     },
     body: {
       some: 'value',

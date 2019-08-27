@@ -1,35 +1,47 @@
 const ENV = process.env.NODE_ENV || 'dev';
-const compare = require('secure-compare')
 const fastify = require("fastify")({
   logger: {
     prettyPrint: ENV !== 'dev' ? false : { colorize: true },
   },
 });
 
-fastify.register(require("fastify-sensible"));
-
-// HINT: This plugin is not 100% complaint with what we currently have in driver
-//       it only accepts the bearer token as a Header param (for security reasons)
-const AUTH_WHITELIST_URLS = [
-  '/',
-  '/error',
-  '/uncaught',
-];
-
-const AUTH_KEYS = [
-  'a-super-secret-key',
-  'another-super-secret-key'
-];
-
-fastify.register(require('fastify-bearer-auth'), {
-  auth(key, request) {
-    if (AUTH_WHITELIST_URLS.includes(request.req.url)) {
-      return true;
+// plugins
+fastify
+  .register(require("fastify-sensible"))
+  .use(async (request, reply, next) => {
+    const url = new URL(request.url, 'fake://url');
+    if (['/graphql'].includes(url.pathname)) {
+      return next();
     }
-
-    return AUTH_KEYS.findIndex((a) => compare(a, key)) !== -1;
-  },
-});
+  
+    const token = require('parse-bearer-token').default(request); // only support header
+    if (!token) {
+      throw fastify.httpErrors.unauthorized();
+    }
+  
+    if ([
+      'a-super-secret-key',
+      'another-super-secret-key'
+    ].includes(token)) {
+      return next();
+    }
+  
+    throw fastify.httpErrors.forbidden();
+  })
+  .use(
+    '/graphql',
+    require('express-graphql')({
+      schema: require('graphql').buildSchema(`
+        type Query {
+          hello: String
+        }
+      `),
+      rootValue: {
+        hello: () => 'Hello world! ' + Date.now(),
+      },
+      graphiql: true, // Go to http://localhost:3000/graphql?query=query%20%7B%0A%20%20hello%0A%7D
+    }),
+  );
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -65,7 +77,7 @@ fastify.post("/async/error", async (request, reply) => {
   } catch (error) {
     request.log.error(error);
   }
-});
+  });    
 
 const start = async () => {
   try {
