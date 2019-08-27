@@ -7,12 +7,14 @@
   },
   "dependencies": {
     "fastify": "2.6.0",
+    "fastify-bearer-auth": "^4.2.0",
     "fastify-log": "^1.0.3",
     "fastify-sensible": "2.1.1",
     "polka": "0.5.2",
     "request": "2.88.0",
     "request-promise": "4.2.4",
-    "restify": "8.3.3"
+    "restify": "8.3.3",
+    "secure-compare": "^3.0.1"
   },
   "devDependencies": {
     "nodemon": "^1.19.1",

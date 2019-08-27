@@ -1,11 +1,5 @@
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 const ENV = process.env.NODE_ENV || 'dev';
-
-// FASTIFY
-// ===============
+const compare = require('secure-compare')
 const fastify = require("fastify")({
   logger: {
     prettyPrint: ENV !== 'dev' ? false : { colorize: true },
@@ -13,6 +7,33 @@ const fastify = require("fastify")({
 });
 
 fastify.register(require("fastify-sensible"));
+
+// HINT: This plugin is not 100% complaint with what we currently have in driver
+//       it only accepts the bearer token as a Header param (for security reasons)
+const AUTH_WHITELIST_URLS = [
+  '/',
+  '/error',
+  '/uncaught',
+];
+
+const AUTH_KEYS = [
+  'a-super-secret-key',
+  'another-super-secret-key'
+];
+
+fastify.register(require('fastify-bearer-auth'), {
+  auth(key, request) {
+    if (AUTH_WHITELIST_URLS.includes(request.req.url)) {
+      return true;
+    }
+
+    return AUTH_KEYS.findIndex((a) => compare(a, key)) !== -1;
+  },
+});
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 fastify.post("/", async (request, reply) => {
   reply.type("application/json").code(200).send({ hello: "world" });
@@ -48,7 +69,7 @@ fastify.post("/async/error", async (request, reply) => {
 
 const start = async () => {
   try {
-    await fastify.listen(3000)
+    await fastify.listen(process.env.PORT || 3000)
     fastify.log.info(`server listening on ${fastify.server.address().port}`)
   } catch (err) {
     fastify.log.error(err)
