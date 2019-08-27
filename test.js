@@ -24,6 +24,8 @@ async function main() {
       await rp({ ...options, uri: options.uri.concat('/error') }).catch(({ error }) => error),
       await rp({ ...options, uri: options.uri.concat('/async') }),
       await rp({ ...options, uri: options.uri.concat('/async/error') }),
+      await rp({ ...options, uri: options.uri.concat('/uncaught') }).catch(({ error }) => error),
+      await rp({ ...options, uri: options.uri.concat('/some/not-found/route') }).catch(({ error }) => error),
     ]
 
     console.log(responses);

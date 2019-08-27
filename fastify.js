@@ -22,6 +22,10 @@ fastify.post("/error", async (request, reply) => {
   throw fastify.httpErrors.forbidden("🚫");
 });
 
+fastify.post("/uncaught", async (request, reply) => {
+  throw new Error('Random Error');
+});
+
 fastify.post("/async", async (request, reply) => {
   reply.code(200).send("OK");
   await sleep(2000);
